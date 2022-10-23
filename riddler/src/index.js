@@ -13,7 +13,12 @@ function App(props) {
 		setDifference(i);
 	}, [setDifference]);
 
-	return <h1>{words[difference]}</h1>;
+	return (
+		<div className="App">
+			<h1>Riddler</h1>
+			<p>Solution is: {words[difference]}</p>
+		</div>
+	);
 }
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
