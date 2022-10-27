@@ -3,14 +3,14 @@ import { useState } from "react"
 const useRiddler = (solution) => {
     const [turn, setTurn] = useState(0) // tracks the number guess the user is on
     const [currentGuess, setCurrentGuess] = useState('') // tracks current guess, updated everytime they hit keyboard
-    const [guesses, setGuesses] = useState([]) // adds past guesses to array, starts empty
+    const [guesses, setGuesses] = useState([...Array(4)]) // adds past guesses to array, starts empty
     const [history, setHistory] = useState([]) // adds past guesses to array, might not be needed
     const [isCorrect, setIsCorrect] = useState(false) // track if guess is correct
 
     //check guess against solution word
     const checkGuess = () => {
-        let solutionArray = solution.split(" ")
-        let enteredGuess = currentGuess.split(" ").map((l) => {
+        let solutionArray = [...solution]
+        let enteredGuess = [...currentGuess].map((l) => {
             return {key: l, color: 'grey'}
         })
         
@@ -36,13 +36,31 @@ const useRiddler = (solution) => {
     //add a new guess to the guesses state
     //update the isCorrect state if the guess is correct
     // add one to the turn state
-    const addNewGuess = () => {
+    const addNewGuess = (enteredGuess) => {
+        if (currentGuess === solution) { // user wins game
+            setIsCorrect(true)
+        }
 
+        setGuesses(prevGuesses => {
+            let newGuesses = [...prevGuesses]
+            newGuesses[turn] = enteredGuess
+            return newGuesses
+        })
+
+        setHistory(prevHistory => {
+            return [...prevHistory, currentGuess]
+        })
+
+        setTurn(prevTurn => {
+            return prevTurn + 1
+        })
+
+        setCurrentGuess("")
     }
 
     //handle keyup event & track current guess
     //if user presses enter, add the new guess
-    const handleKeyup = ({key}) => {
+    const handleKeyup = ({ key }) => {
         if (key === 'Enter') {
             //make sure turn is not greater than 4
             if (turn > 5) { 
@@ -56,8 +74,12 @@ const useRiddler = (solution) => {
                 return
             }
 
+            if (currentGuess.length !== solution.length) {
+                return
+            }
+
             const enteredWord = checkGuess()
-            console.log(enteredWord)
+            addNewGuess(enteredWord)
         }
 
         if (key === 'Backspace') {
@@ -66,7 +88,7 @@ const useRiddler = (solution) => {
             })
         }
         
-        if (/^[A-Za-z  ]$/.test(key)) {
+        if (/^[A-Za-z]$/.test(key)) {
             
             setCurrentGuess((prev) => {
                 return prev + key

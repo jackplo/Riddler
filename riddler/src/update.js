@@ -1,5 +1,5 @@
 export default function update() {
-	let start = new Date("10/21/2022 00:00:00");
+	let start = new Date("10/26/2022 00:00:00");
 	let today = new Date();
 
 	//let difference = today.getTime() - start.getTime();
@@ -8,3 +8,4 @@ export default function update() {
 
 	return Math.floor((today.getTime() - start.getTime()) / (1000 * 3600 * 24));
 }
+
